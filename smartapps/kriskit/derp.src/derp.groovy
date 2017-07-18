@@ -14,7 +14,7 @@
  *
  */
 metadata {
-	definition (name: "Switch Group Device 2", namespace: "kriskit", author: "Chris Kitch") {
+	definition (name: "Derp", namespace: "kriskit", author: "Chris Kitch") {
 		capability "Actuator"
 		capability "Sensor"
 		capability "Switch"
