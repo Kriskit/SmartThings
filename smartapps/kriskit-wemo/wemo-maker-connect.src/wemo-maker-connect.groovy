@@ -179,7 +179,7 @@ def addMakers() {
 
 		if (!d) {
 			log.debug "Creating WeMo Maker with dni: ${selectedMaker.value.mac}"
-			d = addChildDevice("kriskit.wemo", "Wemo Maker", selectedMaker.value.mac, selectedMaker?.value.hub, [
+			d = addChildDevice("kriskit-wemo", "Wemo Maker", selectedMaker.value.mac, selectedMaker?.value.hub, [
 				"label": selectedMaker?.value?.name ?: "Wemo Maker",
 				"data": [
 					"mac": selectedMaker.value.mac,
