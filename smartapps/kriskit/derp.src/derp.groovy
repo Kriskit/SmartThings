@@ -1,5 +1,5 @@
 /**
- *  Trend Setter - Switch Group Device
+ *  Trend Setter - Group
  *
  *  Copyright 2015 Chris Kitch
  *
@@ -13,118 +13,361 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  */
-metadata {
-	definition (name: "Derp", namespace: "kriskit", author: "Chris Kitch") {
-		capability "Actuator"
-		capability "Sensor"
-		capability "Switch"
+definition(
+    name: "Derp",
+    namespace: "kriskit",
+    author: "Chris Kitch",
+    description: "A child SmartApp for Trend Setter for handling a group of devices.",
+    category: "My Apps",
+    iconUrl: "https://cdn.rawgit.com/Kriskit/SmartThingsPublic/master/smartapps/kriskit/trendsetter/icon.png",
+    iconX2Url: "https://cdn.rawgit.com/Kriskit/SmartThingsPublic/master/smartapps/kriskit/trendsetter/icon@2x.png",
+    iconX3Url: "https://cdn.rawgit.com/Kriskit/SmartThingsPublic/master/smartapps/kriskit/trendsetter/icon@3x.png",
+    parent: "kriskit.trendsetter:Trend Setter")
+    
+def version() {
+	return "1.2"
+}
+
+def typeDefinitions() {
+	return [
+        [
+        	id: "switch",
+        	type: "switch", 
+            singular: "Switch", 
+            plural: "Switches", 
+            groupDeviceType: "Switch Group Device",
+            experimental: true,
+            attributes: [
+            		[name: "switch"]
+            	]
+        ],
+        [
+        	id: "switchLevel",
+        	type: "switchLevel", 
+            singular: "Dimmer", 
+            plural: "Dimmers", 
+            groupDeviceType: "Dimmer Group Device",
+            inherits: "switch",
+            experimental: true,
+            attributes: [
+            	[name: "level"]
+            ]
+        ],
+        [
+        	id: "colorTemperature",
+        	type: "colorTemperature", 
+            singular: "Color Temperature Light", 
+            plural: "Color Temperature Lights", 
+            groupDeviceType: "Color Temperature Light Group Device",
+            inherits: "switchLevel",
+            experimental: true,
+            attributes: [
+            	[name: "colorTemperature"]
+            ]
+        ],
+        [
+        	id: "colorControl",
+        	type: "colorControl",
+            singular: "Colorful Light",
+            plural: "Colorful Lights",
+            groupDeviceType: "Colorful Light Group Device",
+            inherits: "switchLevel",
+            attributes: [
+            	[name: "hue"],
+                [name: "saturation"],
+                [name: "color"]
+            ]
+        ],
+        [
+        	id: "colorTempLight",
+        	type: "colorControl", 
+            singular: "Colorful Temperature Light", 
+            plural: "Colorful Temperature Lights", 
+            groupDeviceType: "Colorful Temperature Light Group Device",
+            inherits: "colorControl",
+            experimental: true,
+            attributes: [
+            	[name: "colorTemperature"]
+            ]
+        ],
+        [
+        	id: "powerMeter",
+        	type: "powerMeter",
+            singular: "Power Meter",
+            plural: "Power Meters",
+            groupDeviceType: "Power Meter Group Device",
+            attributes: [
+            	[name: "power"]
+            ]
+        ]
+    ]
+}
+
+// Setup
+preferences {
+	page(name: "configure")
+}
+
+def configure() {
+	atomicState.typeDefinitions = null
+	def controller = getControllerDevice();
+
+	dynamicPage(name: "configure", uninstall: controller != null, install: true) {   
+        if (!controller) {
+           section {              
+				input "deviceType", "enum", title: "Device Type", required: true, submitOnChange: true, options: getDeviceTypeOptions()
+                paragraph "This cannot be changed once the group is created.", color: "#ffcc00"
+            }
+        }
         
-        attribute "onPercentage", "number"
-	}
-
-	simulator {
-		// TODO: define status and reply messages here
-	}
-
-	tiles(scale: 2) {
-		multiAttributeTile(name:"switch", type: "lighting", width: 6, height: 4, canChangeIcon: true){
-			tileAttribute ("device.switch", key: "PRIMARY_CONTROL") {
-				attributeState "on", label: '${name}', action: "switch.off", icon: "st.switches.switch.on", backgroundColor: "#79b821", nextState: "turningOff"
-				attributeState "off", label: '${name}', action: "switch.on", icon: "st.switches.switch.off", backgroundColor: "#ffffff", nextState: "turningOn"
-				attributeState "turningOn", label: '${name}', action: "switch.off", icon: "st.switches.switch.on", backgroundColor: "#79b821", nextState: "turningOff"
-				attributeState "turningOff", label: '${name}', action: "switch.on", icon: "st.switches.switch.off", backgroundColor: "#ffffff", nextState: "turningOn"
-                attributeState "half", label: '${name}', action: "switch.on", icon: "st.switches.switch.off", backgroundColor: "#a3d164", nextState: "turningOn"
-                attributeState "mostlyOn", label: 'Onish', action: "switch.on", icon: "st.switches.switch.off", backgroundColor: "#79b821", nextState: "turningOn"
-                attributeState "mostlyOff", label: 'Offish', action: "switch.off", icon: "st.switches.switch.off", backgroundColor: "#d1e5b5", nextState: "turninOff"
-			}
+        if (deviceType) {
+           	def definition = getTypeDefinition(deviceType)
+        
+            section(title: controller == null ? "Grouping" : null) {
+        		label title: "Group Name", required: true
             
-			tileAttribute ("device.onPercentage", key: "SECONDARY_CONTROL") {
-				attributeState "onPercentage", label:'${currentValue}% On'
-                attributeState "100", label:'All On'
-                attributeState "0", label:'All Off'
-			}
-		}
+                input "devices", "capability.${definition.type}", title: "${definition.plural}", multiple: true, required: true, submitOnChange: controller != null
+
+                if (selectedDevicesContainsController()) {
+                    paragraph "WARNING: You have selected the controller ${definition.singular.toLowerCase()} for this group. This will likely cause unexpected behaviour.\n\nPlease uncheck the '${controller.displayName}' from the selected ${definition.plural.toLowerCase()}.", 
+                        image: "https://cdn2.iconfinder.com/data/icons/freecns-cumulus/32/519791-101_Warning-512.png"
+                }
+            }
+            
+			if (controller == null) {
+                section(title: "Controller") {                        
+                    input "deviceName", "text", title: "${definition.singular} Name", required: true, description: "For the controlling virtual ${definition.singular.toLowerCase()} to be created"
+                }
+            }
+            
+            if (definition.advanced) {
+            	section(title: "Advanced", hidden: true, hideable: true) {}
+            }
+            
+            if (definition.experimental) {
+            	section(title: "Experimental", hidden: true, hideable: true) {
+					input "bidirectional", "bool", title: "Bidirectional", defaultValue: false, required: true
+                    paragraph "Devices in the group will automatically synchronise other devices in the group when their states change."
+                    paragraph "WARNING: This is experimental. Behaviour may not work as expected.", 
+                        image: "https://cdn2.iconfinder.com/data/icons/freecns-cumulus/32/519791-101_Warning-512.png"
+                }
+            }
+        }
+	}
+}
+
+def installed() {
+	log.debug "Installed with settings: ${settings}"
+    
+	installControllerDevice()
+	initialize()
+}
+
+def uninstalled() {
+	log.debug "Uninstalled"
+}
+
+def installControllerDevice() {
+	def definition = getTypeDefinition()
+
+	log.debug "Installing switch group controller device..."
+	addChildDevice("kriskit.trendSetter", definition.groupDeviceType, UUID.randomUUID().toString(), null, ["name": deviceName, "label": deviceName, completedSetup: true])
+}
+
+def updated() {
+	log.debug "Updated with settings: ${settings}"
+
+	unsubscribe()
+	initialize()
+}
+
+def initialize() {
+	def definition = getTypeDefinition()
+	addSubscriptions(definition)
+    def namesToCheck = definition.attributes?.collect { it.name }
+    updateControllerState(namesToCheck)
+}
+
+def addSubscriptions(definition) {
+	def controller = getControllerDevice()
+
+    definition.attributes?.each {
+    	log.debug "Subscribing to ${it.name}..."
+    	subscribe(devices, it.name, onDeviceAttributeChange)
+    }
+}
+
+// Subscription Handlers
+def onDeviceAttributeChange(evt) {
+	def namesToCheck = atomicState.namesToCheck  ?: []
+
+	log.debug "Device state change: ${evt.device.displayName} -> ${evt.name} = ${evt.value}"
+
+    if (!namesToCheck.any { it == evt.name })
+    	namesToCheck.push(evt.name)
+        
+	atomicState.namesToCheck = namesToCheck
+    
+    if (bidirectional) {    
+        def controller = getControllerDevice()
+        def commandInfo = controller.mapAttributeToCommand(evt.name, evt.value)        
+        def devicesToUse = devices?.findAll {
+        	it.id != evt.device.id
+        }
+        log.debug "Updating $devicesToUse to match ${evt.device}..."
+        devicesToUse?.each {
+        	runCommand(it, commandInfo.command, commandInfo.arguments)
+        }
+    }
+    
+    runIn(1, "updateControllerState")
+}
+
+def updateControllerState() {
+	def namesToCheck = atomicState.namesToCheck
+    updateControllerState(namesToCheck)
+    atomicState.namesToCheck = null
+}
+
+def updateControllerState(namesToCheck) {
+	if (!namesToCheck)
+    	return
+
+	def controller = getControllerDevice()
+    namesToCheck?.each { name ->
+    	def values = devices?.currentValue(name)
+        values?.removeAll([null])
+        log.debug "Updating Controller State: $name -> $values"
+        controller.groupSync(name, values)
+    }
+}
+
+def performGroupCommand(command, arguments = null) {
+	def target = devices
+
+	if (bidirectional)
+    	target = devices?.find { true }
+
+	runCommand(target, command, arguments ?: []) 
+}
+
+def runCommand(target, command, args) {
+    log.debug "Running command '${command}' with arguments ${args} on ${target}..."
+    $performCommand(target, command, args)
+}
+
+def getGroupCurrentValues(name) {
+	return devices?.currentValue(name)
+}
+
+// Utilities
+def getTypeDefinitions() {
+	if (atomicState.version != version()) {
+    	atomicState.typeDefinitions = null
+        atomicState.version = version()
+	}
+
+	if (atomicState.typeDefinitions)
+    	return atomicState.typeDefinitions
+
+	log.debug "Building type definitions..."
+
+	def result = []
+	def definitions = typeDefinitions()
+    
+    definitions?.each { definition ->
+    	if (definition.inherits)
+        	definition = mergeAttributes(definition, definitions.find { it.id == definition.inherits })
+    
+    	result.push(definition)
+    }
+    
+    atomicState.typeDefinitions = result
+    
+    return result
+}
+
+def mergeAttributes(definition, inheritedDefinition) {
+    inheritedDefinition.attributes?.each { attr ->
+    	if (!definition.attributes?.any { it.name == attr.name })
+        	definition.attributes.push(attr)
+    }
+    
+    if (inheritedDefinition.inherits) {
+    	def definitions = typeDefinitions()
+    	definition = mergeAttributes(definition, definitions.find { it.id == inheritedDefinition.inherits })
 	}
     
-    main "switch"
-    details(["switch"])
+    return definition
 }
 
-def parse(String description) {
+def getControllerDevice() {
+	return getChildDevices()?.find { true }
 }
 
-def groupSync(name, values) {
-	try {
-    	"sync${name.capitalize()}"(values)	
-    } catch(ex) {
-    	log.error "Error executing 'sync${name.capitalize()}' method: $ex"
+def getTypeDefinition() {
+	return getTypeDefinition(deviceType)
+}
+
+def getTypeDefinition(id) {
+	return getTypeDefinitions().find {
+    	it.id == id
     }
 }
 
-def mapAttributeToCommand(name, value) {
-	switch (name) {
-    	case "switch":
-        	if (value == "on")
-        		return [command: "on", arguments: null]
-
-        	if (value == "off")
-        		return [command: "off", arguments: null]
-       	break;
+def getDeviceTypeOptions() {
+	return getTypeDefinitions().collect {
+    	["${it.id}": it.singular]
     }
-    
-    log.error "Could not map '$name' attribute with value '$value' to a command."
 }
 
-// SWITCH
-def on() {
-	on(true)
-}
-
-def on(triggerGroup) {
-	sendEvent(name: "switch", value: "on")
-    sendEvent(name: "onPercentage", value: 100, displayed: false)
-    
-    if (triggerGroup)
-    	parent.performGroupCommand("on")
-}
-
-def off() {
-	off(true)
-}
-
-def off(triggerGroup) {
-	sendEvent(name: "switch", value: "off")
-    sendEvent(name: "onPercentage", value: 0, displayed: false)
-    
-    if (triggerGroup)
-    	parent.performGroupCommand("off")
-}
-
-def syncSwitch(values) {
-	log.debug "syncSwitch(): $values"
-    
-    def onCount = values?.count { it == "on" }
-    def percentOn = (int)Math.floor((onCount / values?.size()) * 100)
-    
-    log.debug "Percent On: $percentOn"
-    
-    if (percentOn == 0 || percentOn == 100) {
-    	if (percentOn == 0)
-        	off(false)
-        else
-        	on(false)            
-        return
+def selectedDevicesContainsController() {
+	def controller = getControllerDevice()
+	return devices?.any { 
+    	it?.deviceNetworkId == controller?.deviceNetworkId 
     }
+}
+
+private $performCommand(target, command, args) {
+    switch(args?.size()) {
+    	default: 
+        	target?."$command"()
+        break
     
-    def value = null
-    
-    if (percentOn == 50)
-    	value = "half"
-    else if (percentOn > 0 && percentOn < 50)
-		value = "mostlyOff"
-    else if (percentOn > 50 && percentOn < 100)
-		value = "mostlyOn"
+    	case 1: 
+        	target?."$command"(args[0])
+        break
         
-	sendEvent(name: "switch", value: value)
-	sendEvent(name: "onPercentage", value: percentOn, displayed: false)
+		case 2: 
+        	target?."$command"(args[0], args[1])
+        break
+        
+		case 3: 
+        	target?."$command"(args[0], args[1], args[2])
+        break
+        
+		case 4: 
+        	target?."$command"(args[0], args[1], args[2], args[3])
+        break
+        
+		case 5: 
+        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5])
+        break
+        
+		case 6: 
+        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6])
+        break
+        
+        case 7: 
+        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7])
+        break
+        
+        case 8: 
+        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8])
+        break
+        
+        case 9: 
+        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9])
+        break
+    }
 }
