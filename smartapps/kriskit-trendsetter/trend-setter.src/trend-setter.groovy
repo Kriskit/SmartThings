@@ -32,7 +32,7 @@ preferences {
 def mainPage() {
 	dynamicPage(name: "mainPage", title: "Your Groups", install: true, uninstall: true, submitOnChange: true) {
         section {
-        	app(name: "groups", appName: "Group", namespace: "kriskit.trendSetter", title: "Create Group...", multiple: true)
+        	app(name: "groups", appName: "Group", namespace: "kriskit-trendsetter", title: "Create Group...", multiple: true)
         }
     }
 }
