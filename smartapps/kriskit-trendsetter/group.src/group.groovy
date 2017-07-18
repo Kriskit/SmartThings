@@ -19,9 +19,9 @@ definition(
     author: "Chris Kitch",
     description: "A child SmartApp for Trend Setter for handling a group of devices.",
     category: "My Apps",
-    iconUrl: "https://cdn.rawgit.com/Kriskit/SmartThingsPublic/master/smartapps/kriskit/trendsetter/icon.png",
-    iconX2Url: "https://cdn.rawgit.com/Kriskit/SmartThingsPublic/master/smartapps/kriskit/trendsetter/icon@2x.png",
-    iconX3Url: "https://cdn.rawgit.com/Kriskit/SmartThingsPublic/master/smartapps/kriskit/trendsetter/icon@3x.png",
+    iconUrl: "https://cdn.rawgit.com/Kriskit/SmartThings/master/smartapps/kriskit-trendsetter/icon.png",
+    iconX2Url: "https://cdn.rawgit.com/Kriskit/SmartThings/master/smartapps/kriskit-trendsetter/icon@2x.png",
+    iconX3Url: "https://cdn.rawgit.com/Kriskit/SmartThings/master/smartapps/kriskit-trendsetter/icon@3x.png",
     parent: "kriskit.trendsetter:Trend Setter")
     
 def version() {
