@@ -171,7 +171,7 @@ def installControllerDevice() {
 	def definition = getTypeDefinition()
 
 	log.debug "Installing switch group controller device..."
-	addChildDevice("kriskit.trendSetter", definition.groupDeviceType, UUID.randomUUID().toString(), null, ["name": deviceName, "label": deviceName, completedSetup: true])
+	addChildDevice("kriskit-trendsetter", definition.groupDeviceType, UUID.randomUUID().toString(), null, ["name": deviceName, "label": deviceName, completedSetup: true])
 }
 
 def updated() {
