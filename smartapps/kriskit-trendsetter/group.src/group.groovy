@@ -15,7 +15,7 @@
  */
 definition(
     name: "Group",
-    namespace: "kriskit.trendSetter",
+    namespace: "kriskit-trendsetter",
     author: "Chris Kitch",
     description: "A child SmartApp for Trend Setter for handling a group of devices.",
     category: "My Apps",
