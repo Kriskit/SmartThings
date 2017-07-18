@@ -14,7 +14,7 @@
  *
  */
 metadata {
-	definition (name: "Power Meter Group Device", namespace: "kriskit.trendsetter", author: "Chris Kitch") {
+	definition (name: "Power Meter Group Device", namespace: "kriskit-trendsetter", author: "Chris Kitch") {
 		capability "Power Meter"
 		capability "Sensor"
         capability "Refresh"

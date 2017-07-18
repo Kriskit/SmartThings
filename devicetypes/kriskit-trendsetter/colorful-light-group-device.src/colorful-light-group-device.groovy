@@ -1,7 +1,7 @@
 /**
- *  Trend Setter - Colorful Temperature Light Group Device
+ *  Trend Setter - Colorful Light Group Device
  *
- *  Copyright 2017 Chris Kitch
+ *  Copyright 2015 Chris Kitch
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -14,22 +14,19 @@
  *
  */
 metadata {
-	definition (name: "Colorful Temperature Light Group Device", namespace: "kriskit.trendSetter", author: "Chris Kitch") {
+	definition (name: "Colorful Light Group Device", namespace: "kriskit-trendsetter", author: "Chris Kitch") {
 		capability "Actuator"
 		capability "Sensor"
 		capability "Switch"
 		capability "Switch Level"
         capability "Color Control"
-		capability "Color Temperature"
         
         command "adjustLevel"
-		command "adjustColorTemp"
         command "adjustSaturation"
         command "adjustHue"
         
         attribute "onPercentage", "number"
         attribute "levelSync", "string"
-        attribute "colorTempSync", "string"
         attribute "colorSync", "string"
         attribute "saturationSync", "string"
         attribute "hueSync", "string"
@@ -83,23 +80,6 @@ metadata {
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
         
-        standardTile("colorTempLabel", "colorTempLabel", height:1, width:1, decoration: "flat", inactiveLabel: true) {
-            state "default", label:"Temp", unit:"", icon: "st.illuminance.illuminance.bright"
-        }
-        
-        controlTile("colorTempSliderControl", "device.colorTemperature", "slider", height: 1, width: 3, inactiveLabel: false, range:"(2000..6500)") {
-            state "level", action:"color temperature.setColorTemperature"
-        }
-        
-        valueTile("colorTempValue", "device.colorTemperature", inactiveLabel: true, height:1, width:1, decoration: "flat") {
-            state "default", label:'${currentValue} K', unit:""
-        }
-        
-        valueTile("colorTempSync", "device.colorTempSync", height:1, width:1) {
-            state "default", label:' Sync ', unit:"", action: "adjustColorTemp", backgroundColor: "#ff9900"
-            state "ok", label:'', unit:"", backgroundColor: "#00b509"
-        }
-        
         standardTile("saturationLabel", "saturationLabel", height:1, width:1, decoration: "flat", inactiveLabel: true) {
             state "default", label:"Sat", unit:"", icon: "st.Kids.kids2"
         }
@@ -142,10 +122,6 @@ metadata {
         "levelSliderControl", 
         "levelValue", 
         "levelSync", 
-		"colorTempLabel", 
-        "colorTempSliderControl", 
-        "colorTempValue", 
-        "colorTempSync",
         "saturationLabel", 
         "saturationSliderControl", 
         "saturationValue", 
@@ -165,32 +141,6 @@ def groupSync(name, values) {
     } catch(ex) {
     	log.error "Error executing 'sync${name.capitalize()}' method: $ex"
     }
-}
-
-def mapAttributeToCommand(name, value) {
-	switch (name) {
-    	case "switch":
-        	if (value == "on")
-        		return [command: "on", arguments: null]
-
-        	if (value == "off")
-        		return [command: "off", arguments: null]
-       	break;
-        
-        case "level":
-        	return [command: "setLevel", arguments: [value.toInteger()]]
-            
-        case "color":
-        	return [command: "setColor", arguments: [value]]
-            
-        case "hue":
-        	return [command: "setHue", arguments: [value.toInteger()]]
-            
-        case "saturation":
-        	return [command: "setSaturation", arguments: [value.toInteger()]]
-    }
-    
-    log.error "Could not map '$name' attribute with value '$value' to a command."
 }
 
 // SWITCH
@@ -329,89 +279,6 @@ def getAdjustmentLevel(values) {
     }
     
     return level
-}
-
-// COLOR TEMPERATURE
-def setColorTemperature(val){
-	setColorTemperature(val, true)
-}
-
-def setColorTemperature(val, triggerGroup) {
-	log.debug "Setting color temperature to $val"
-
-    if (val < 2000)
-    	val = 2000
-    
-    if( val > 6500)
-    	val = 6500
-        
-    if (triggerGroup)
-       on()
-        
-    sendEvent(name: "colorTemperature", value: val, isStateChange: true)
-    
-    if (triggerGroup)
-    	parent.performGroupCommand("setColorTemperature", [val])
-}
-
-def syncColorTemperature(values) {
-	log.debug "syncColorTemp(): $values"
-    
-    def valueCount = values?.size()
-    def valueCountBy = values?.countBy { it }
-    def matchValue = "bad"
-    def colorTemp = device.currentValue("colorTemperature")
-    
-    valueCountBy.each { value, count -> 
-    	if (count == valueCount) {
-        	colorTemp = value
-            matchValue = "ok"
-        	return true
-        }
-    }
-    
-    if (matchValue == "bad")
-    	colorTemp = getAdjustmentColorTemp(values)
-    
-    setColorTemperature(colorTemp, false)
-    sendEvent(name: "colorTempSync", value: matchValue, displayed: false)
-}
-
-def adjustColorTemp() {
-	def values = parent.getGroupCurrentValues("colorTemperature")
-    
-    if (!values)
-    	return
-        
-    def valueCountBy = values?.countBy { it }
-    valueCountBy = valueCountBy?.sort { a, b -> b.value <=> a.value }
-    
-    def colorTemp = getAdjustmentColorTemp(values)
-    
-    setColorTemperature(colorTemp)
-}
-
-def getAdjustmentColorTemp(values) {
-    if (!values)
-    	return
-        
-    def valueCountBy = values?.countBy { it }
-    valueCountBy = valueCountBy?.sort { a, b -> b.value <=> a.value }
-    
-    def colorTemp = device.currentValue("colorTemperature")
-    
-    if (valueCountBy.size() > 1) {        
-        if (valueCountBy.size() == values.size()) {
-        	log.debug "Values are all different - making average"
-            colorTemp = Math.round(values.sum() / values.size())
-        } else {
-			log.debug "Some values are the same, choosing most popular"
-            def firstItem = valueCountBy.find { true }
-            colorTemp = firstItem.key
-        }
-    }
-    
-    return colorTemp
 }
 
 // COLOR

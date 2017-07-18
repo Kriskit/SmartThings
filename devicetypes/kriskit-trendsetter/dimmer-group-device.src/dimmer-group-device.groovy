@@ -14,7 +14,7 @@
  *
  */
 metadata {
-	definition (name: "Dimmer Group Device", namespace: "kriskit.trendSetter", author: "Chris Kitch") {
+	definition (name: "Dimmer Group Device", namespace: "kriskit-trendsetter", author: "Chris Kitch") {
 		capability "Actuator"
 		capability "Sensor"
 		capability "Switch"
