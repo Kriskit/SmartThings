@@ -22,7 +22,7 @@ definition(
     iconUrl: "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
     iconX2Url: "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon@2x.png",
     iconX3Url: "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon@3x.png",
-    parent: "kriskit.trendsetter:Trend Setter")
+    parent: "kriskit-trendsetter:Trend Setter")
     
 def version() {
 	return "1.2"
