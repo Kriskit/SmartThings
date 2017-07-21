@@ -20,7 +20,7 @@ metadata {
 		capability "Switch"
 		capability "Switch Level"
         
-        command "adjustLevel"
+        command "resetLevel"
         
         attribute "onPercentage", "number"
         attribute "levelSync", "string"
@@ -66,7 +66,7 @@ metadata {
         }
         
         valueTile("levelSync", "device.levelSync", height:1, width:1) {
-            state "default", label:' Sync ', unit:"", action: "adjustLevel", backgroundColor: "#ff9900"
+            state "default", label:' Sync ', unit:"", action: "resetLevel", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
 	}
@@ -202,13 +202,13 @@ def syncLevel(values) {
     }
     
     if (matchValue == "bad")
-    	level = getAdjustmentLevel(values)
+    	level = getResetLevel(values)
     
     setLevel(level, false)
     sendEvent(name: "levelSync", value: matchValue, displayed: false)
 }
 
-def adjustLevel() {
+def resetLevel() {
 	def values = parent.getGroupCurrentValues("level")
     
     if (!values)
@@ -217,12 +217,12 @@ def adjustLevel() {
     def valueCountBy = values?.countBy { it }
     valueCountBy = valueCountBy?.sort { a, b -> b.value <=> a.value }
     
-    def level = getAdjustmentLevel(values)
+    def level = getResetLevel(values)
     
     setLevel(level)
 }
 
-def getAdjustmentLevel(values) {
+def getResetLevel(values) {
     if (!values)
     	return
         

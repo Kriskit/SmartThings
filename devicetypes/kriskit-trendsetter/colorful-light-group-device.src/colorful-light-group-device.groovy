@@ -21,9 +21,9 @@ metadata {
 		capability "Switch Level"
         capability "Color Control"
         
-        command "adjustLevel"
-        command "adjustSaturation"
-        command "adjustHue"
+        command "resetLevel"
+        command "resetSaturation"
+        command "resetHue"
         
         attribute "onPercentage", "number"
         attribute "levelSync", "string"
@@ -76,7 +76,7 @@ metadata {
         }
         
         valueTile("levelSync", "device.levelSync", height:1, width:1) {
-            state "default", label:' Sync ', unit:"", action: "adjustLevel", backgroundColor: "#ff9900"
+            state "default", label:' Sync ', unit:"", action: "resetLevel", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
         
@@ -93,7 +93,7 @@ metadata {
         }
         
         valueTile("saturationSync", "device.saturationSync", height:1, width:1) {
-            state "default", label:' Sync ', unit:"", action: "adjustSaturation", backgroundColor: "#ff9900"
+            state "default", label:' Sync ', unit:"", action: "resetSaturation", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
         
@@ -110,7 +110,7 @@ metadata {
         }
         
         valueTile("hueSync", "device.hueSync", height:1, width:1) {
-            state "default", label:' Sync ', unit:"", action: "adjustHue", backgroundColor: "#ff9900"
+            state "default", label:' Sync ', unit:"", action: "resetHue", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
 	}
@@ -242,23 +242,23 @@ def syncLevel(values) {
     }
     
     if (matchValue == "bad")
-    	level = getAdjustmentLevel(values)
+    	level = getResetLevel(values)
     
     setLevel(level, false)
     sendEvent(name: "levelSync", value: matchValue, displayed: false)
 }
 
-def adjustLevel() {
+def resetLevel() {
 	def values = parent.getGroupCurrentValues("level")
     
     if (!values)
     	return
 
-    def level = getAdjustmentLevel(values)    
+    def level = getResetLevel(values)    
     setLevel(level)
 }
 
-def getAdjustmentLevel(values) {
+def getResetLevel(values) {
     if (!values)
     	return
         
@@ -346,9 +346,9 @@ def syncSaturation(values) {
     sendEvent(name: "saturationSync", value: matchValue, displayed: false)
 }
 
-def adjustSaturation() {
+def resetSaturation() {
     def saturation = (int)device.currentValue("saturation")    
-	log.debug "adjustSaturation $saturation"
+	log.debug "resetSaturation $saturation"
     setSaturation(saturation)
 }
 
@@ -387,8 +387,8 @@ def syncHue(values) {
     sendEvent(name: "hueSync", value: matchValue, displayed: false)
 }
 
-def adjustHue() {
+def resetHue() {
     def hue = (int)device.currentValue("hue")    
-	log.debug "adjustHue: $hue"
+	log.debug "resetHue: $hue"
     setHue(hue)
 }

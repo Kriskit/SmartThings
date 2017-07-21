@@ -22,10 +22,10 @@ metadata {
         capability "Color Control"
 		capability "Color Temperature"
         
-        command "adjustLevel"
-		command "adjustColorTemp"
-        command "adjustSaturation"
-        command "adjustHue"
+        command "resetLevel"
+		command "resetColorTemp"
+        command "resetSaturation"
+        command "resetHue"
         
         attribute "onPercentage", "number"
         attribute "levelSync", "string"
@@ -79,7 +79,7 @@ metadata {
         }
         
         valueTile("levelSync", "device.levelSync", height:1, width:1) {
-            state "default", label:' Sync ', unit:"", action: "adjustLevel", backgroundColor: "#ff9900"
+            state "default", label:' Sync ', unit:"", action: "resetLevel", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
         
@@ -96,7 +96,7 @@ metadata {
         }
         
         valueTile("colorTempSync", "device.colorTempSync", height:1, width:1) {
-            state "default", label:' Sync ', unit:"", action: "adjustColorTemp", backgroundColor: "#ff9900"
+            state "default", label:' Sync ', unit:"", action: "resetColorTemp", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
         
@@ -113,7 +113,7 @@ metadata {
         }
         
         valueTile("saturationSync", "device.saturationSync", height:1, width:1) {
-            state "default", label:' Sync ', unit:"", action: "adjustSaturation", backgroundColor: "#ff9900"
+            state "default", label:' Sync ', unit:"", action: "resetSaturation", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
         
@@ -130,7 +130,7 @@ metadata {
         }
         
         valueTile("hueSync", "device.hueSync", height:1, width:1) {
-            state "default", label:' Sync ', unit:"", action: "adjustHue", backgroundColor: "#ff9900"
+            state "default", label:' Sync ', unit:"", action: "resetHue", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
 	}
@@ -292,23 +292,23 @@ def syncLevel(values) {
     }
     
     if (matchValue == "bad")
-    	level = getAdjustmentLevel(values)
+    	level = getResetLevel(values)
     
     setLevel(level, false)
     sendEvent(name: "levelSync", value: matchValue, displayed: false)
 }
 
-def adjustLevel() {
+def resetLevel() {
 	def values = parent.getGroupCurrentValues("level")
     
     if (!values)
     	return
 
-    def level = getAdjustmentLevel(values)    
+    def level = getResetLevel(values)    
     setLevel(level)
 }
 
-def getAdjustmentLevel(values) {
+def getResetLevel(values) {
     if (!values)
     	return
         
@@ -371,13 +371,13 @@ def syncColorTemperature(values) {
     }
     
     if (matchValue == "bad")
-    	colorTemp = getAdjustmentColorTemp(values)
+    	colorTemp = getResetColorTemp(values)
     
     setColorTemperature(colorTemp, false)
     sendEvent(name: "colorTempSync", value: matchValue, displayed: false)
 }
 
-def adjustColorTemp() {
+def resetColorTemp() {
 	def values = parent.getGroupCurrentValues("colorTemperature")
     
     if (!values)
@@ -386,12 +386,12 @@ def adjustColorTemp() {
     def valueCountBy = values?.countBy { it }
     valueCountBy = valueCountBy?.sort { a, b -> b.value <=> a.value }
     
-    def colorTemp = getAdjustmentColorTemp(values)
+    def colorTemp = getResetColorTemp(values)
     
     setColorTemperature(colorTemp)
 }
 
-def getAdjustmentColorTemp(values) {
+def getResetColorTemp(values) {
     if (!values)
     	return
         
@@ -479,9 +479,9 @@ def syncSaturation(values) {
     sendEvent(name: "saturationSync", value: matchValue, displayed: false)
 }
 
-def adjustSaturation() {
+def resetSaturation() {
     def saturation = (int)device.currentValue("saturation")    
-	log.debug "adjustSaturation $saturation"
+	log.debug "resetSaturation $saturation"
     setSaturation(saturation)
 }
 
@@ -520,8 +520,8 @@ def syncHue(values) {
     sendEvent(name: "hueSync", value: matchValue, displayed: false)
 }
 
-def adjustHue() {
+def resetHue() {
     def hue = (int)device.currentValue("hue")    
-	log.debug "adjustHue: $hue"
+	log.debug "resetHue: $hue"
     setHue(hue)
 }
