@@ -49,7 +49,7 @@ def updated() {
 	unsubscribe()
 	initialize()
 }
-
+ 
 def initialize() {
 	// TODO: subscribe to attributes, devices, locations, etc.
 }
