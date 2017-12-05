@@ -89,10 +89,18 @@ metadata {
             state "default", label:' Sync ', unit:"", action: "resetColorTemp", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
+        
+       	standardTile("onButton", "onButton", height:1, width:3, decoration: "flat", inactiveLabel: true) {
+            state "default", action: "switch.on", label:"On", unit:""
+        }
+        
+        standardTile("offButton", "offButton", height:1, width:3, decoration: "flat", inactiveLabel: true) {
+            state "default", action: "switch.off", label:"Off", unit:""
+        }
 	}
     
     main "switch"
-    details(["switch", "levelLabel", "levelSliderControl", "levelValue", "levelSync", "colorTempLabel", "colorTempSliderControl", "colorTempValue", "colorTempSync"])
+    details(["switch", "levelLabel", "levelSliderControl", "levelValue", "levelSync", "colorTempLabel", "colorTempSliderControl", "colorTempValue", "colorTempSync", "onButton", "offButton"])
 }
 
 def parse(String description) {

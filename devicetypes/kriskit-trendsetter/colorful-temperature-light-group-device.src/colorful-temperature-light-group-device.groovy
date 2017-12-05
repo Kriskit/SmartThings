@@ -133,6 +133,14 @@ metadata {
             state "default", label:' Sync ', unit:"", action: "resetHue", backgroundColor: "#ff9900"
             state "ok", label:'', unit:"", backgroundColor: "#00b509"
         }
+        
+       	standardTile("onButton", "onButton", height:1, width:3, decoration: "flat", inactiveLabel: true) {
+            state "default", action: "switch.on", label:"On", unit:""
+        }
+        
+        standardTile("offButton", "offButton", height:1, width:3, decoration: "flat", inactiveLabel: true) {
+            state "default", action: "switch.off", label:"Off", unit:""
+        }
 	}
     
     main "switch"
@@ -153,7 +161,9 @@ metadata {
         "hueLabel",
         "hueSliderControl",
         "hueValue",
-        "hueSync"])
+        "hueSync",
+        "onButton",
+        "offButton"])
 }
 
 def parse(String description) {

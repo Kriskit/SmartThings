@@ -44,10 +44,18 @@ metadata {
                 attributeState "0", label:'All Off'
 			}
 		}
+        
+       	standardTile("onButton", "onButton", height:1, width:3, decoration: "flat", inactiveLabel: true) {
+            state "default", action: "switch.on", label:"On", unit:""
+        }
+        
+        standardTile("offButton", "offButton", height:1, width:3, decoration: "flat", inactiveLabel: true) {
+            state "default", action: "switch.off", label:"Off", unit:""
+        }
 	}
     
     main "switch"
-    details(["switch"])
+    details(["switch", "onButton", "offButton"])
 }
 
 def parse(String description) {
