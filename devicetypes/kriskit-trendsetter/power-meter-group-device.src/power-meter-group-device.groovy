@@ -75,23 +75,14 @@ def syncPower(values) {
     if (total == 0) {
     	sendEvent(name: "power", value: 0)
         sendEvent(name: "powerUsage", value: "off")
+        state.powerUsageBoundaries = null
         return
     }
     
-	def aggregate = state.powerAggregate ?: []
-	state.powerSyncCount = state.powerSyncCount + 1
-    
-    if (state.powerSyncCount != null && state.powerSyncCount % 5 != 0) {
-        aggregate.push(total)
-        state.powerAggregate = aggregate
-        return
-    }
+    log.debug "Total Power: $total"
+    sendEvent(name: "power", value: total)
 
-    def aggregatedAverage = getAverage(aggregate)
-    log.debug "Aggregated Average Power: $aggregatedAverage"
-    sendEvent(name: "power", value: aggregatedAverage)
-
-    def level = getPowerUsageLevel(aggregatedAverage)
+    def level = getPowerUsageLevel(total)
     log.debug "Power usage level: $level"
     sendEvent(name: "powerUsage", value: level)
     
@@ -124,11 +115,15 @@ def getPowerUsageLevel(value) {
 	}
 }
 
-def getPowerUsageBoundaries() {
-	if (state.powerUsageBoundaries && state.powerSyncCount < 100)
-    	return state.powerUsageBoundaries
+def getPowerUsageBoundaries(power) {
+	def boundaries = state.powerUsageBoundaries
+
+	if (boundaries) {
+    	if (power >= boundaries.bottom && power <= boundaries.max)
+    		return boundaries
+    }
         
-	def events = device.events([max: 500])
+	def events = parent.getEvents(50)
     def powerEvents = events?.findAll {
     	it.name == "power" && it.doubleValue > 0
     }
@@ -136,20 +131,23 @@ def getPowerUsageBoundaries() {
     def powerValues = powerEvents*.doubleValue
     powerValues.sort()
     
+    if (!powerValues)
+    	return null
+    
     def eventCount = powerValues?.size()
+    
     def eventChunkSize = (int)Math.round(eventCount / 2)
     def chunkedEvents = powerValues.collate(eventChunkSize)
    
    if (chunkedEvents.size() < 2)
    		return null
 
-	def boundaries = [
-    	top: getAverage(chunkedEvents[1]),
+	boundaries = [
     	bottom: getAverage(chunkedEvents[0]),
+    	top: getAverage(chunkedEvents[1]),
         max: powerValues.max()
 	]        
     
-   	state.powerSyncCount = 0
     state.powerUsageBoundaries = boundaries
     
     log.debug "New boundaries: $boundaries"
@@ -159,4 +157,8 @@ def getPowerUsageBoundaries() {
 
 def getAverage(values) {
 	return Math.round((values.sum() / values.size()) * 100) / 100
+}
+
+def powerUsageBoundariesExceeded(value) {
+	
 }
