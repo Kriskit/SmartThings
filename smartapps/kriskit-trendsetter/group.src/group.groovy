@@ -259,6 +259,11 @@ def getGroupCurrentValues(name) {
 	return devices?.currentValue(name)
 }
 
+def getEvents(max = 500) {
+	def controller = getControllerDevice()
+    return controller.events([max: max])
+}
+
 // Utilities
 def getTypeDefinitions() {
 	if (atomicState.version != version()) {
