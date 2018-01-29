@@ -158,7 +158,3 @@ def getPowerUsageBoundaries(power) {
 def getAverage(values) {
 	return Math.round((values.sum() / values.size()) * 100) / 100
 }
-
-def powerUsageBoundariesExceeded(value) {
-	
-}
