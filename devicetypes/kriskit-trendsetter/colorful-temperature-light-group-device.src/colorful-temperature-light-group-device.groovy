@@ -435,9 +435,9 @@ def setColor(value, triggerGroup) {
     def hex = value.hex
     
     if (!hex && value.hue && value.saturation)
-		hex = colorUtil.hslToHex(value.hue, value.saturation)
+		hex = colorUtil.hslToHex((int)value.hue, (int)value.saturation)
         
-	sendEvent(name: "color", value: value.hex, displayed:false)
+	sendEvent(name: "color", value: hex, displayed:false)
     
     if (triggerGroup)
     	parent.performGroupCommand("setColor", [value])
