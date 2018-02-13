@@ -1,0 +1,100 @@
+{
+  "namespace": "kriskit-trendsetter",
+  "repoOwner": "kriskit",
+  "repoName": "SmartThings",
+  "repoBranch": "TrendSetter",
+  "name": "Trend Setter",
+  "author": "Kriskit",
+  "description": "Groups devices together with a virtual device.",
+  "category": "My Apps",
+  "bannerUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon@3x.png",
+  "forumUrl": "https://community.smartthings.com/t/release-trend-setter/31286",
+  "docUrl": "",
+  "releaseType": "production",
+  "keywords": [
+    "lights",
+    "switches",
+    "power",
+    "group"
+  ],
+  "notes": "",
+  "smartApps": {
+    "parent": {
+      "name": "Trend Setter",
+      "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
+      "published": true,
+      "oAuth": false,
+      "version": "1.0",
+      "appSettings": {
+          "clientId":"",
+          "clientSecret": "",
+          "devOpt": ""
+      },
+      "appUrl": "smartapps/kriskit-trendsetter/trend-setter.src/trend-setter.groovy"
+    },
+    "children": [
+      {
+        "name": "Group",
+        "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
+        "published": false,
+        "oAuth": false,
+        "version": "1.0",
+        "appSettings": {
+            "devOpt": ""
+        },
+        "appUrl": "smartapps/kriskit-trendsetter/group.src/group.groovy",
+        "optional": false
+      }
+    ]
+  },
+  "deviceHandlers": [
+    {
+      "name": "Switch Group Device",
+      "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
+      "published": false,
+      "version": "1.0",
+      "appUrl": "devicetypes/kriskit-trendsetter/switch-group-device.src/switch-group-device.groovy",
+      "optional": false
+    },
+    {
+      "name": "Dimmer Group Device",
+      "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
+      "published": false,
+      "version": "1.0",
+      "appUrl": "devicetypes/kriskit-trendsetter/dimmer-group-device.src/dimmer-group-device.groovy",
+      "optional": false
+    },
+    {
+      "name": "Color Temperature Light Group Device",
+      "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
+      "published": false,
+      "version": "1.0",
+      "appUrl": "devicetypes/kriskit-trendsetter/color-temperature-light-group-device.src/color-temperature-light-group-device.groovy",
+      "optional": false
+    },
+    {
+      "name": "Colorful Light Group Device",
+      "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
+      "published": false,
+      "version": "1.0",
+      "appUrl": "devicetypes/kriskit-trendsetter/colorful-light-group-device.src/colorful-light-group-device.groovy",
+      "optional": false
+    },
+    {
+      "name": "Colorful Temperature Light Group Device",
+      "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
+      "published": false,
+      "version": "1.0",
+      "appUrl": "devicetypes/kriskit-trendsetter/colorful-temperature-light-group-device.src/colorful-temperature-light-group-device.groovy",
+      "optional": false
+    },
+    {
+      "name": "Power Meter Group Device",
+      "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
+      "published": false,
+      "version": "1.0",
+      "appUrl": "devicetypes/kriskit-trendsetter/power-meter-group-device.src/power-meter-group-device.groovy",
+      "optional": false
+    }
+  ]
+}
