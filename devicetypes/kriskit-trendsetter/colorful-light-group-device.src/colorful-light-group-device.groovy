@@ -297,7 +297,7 @@ def setColor(value) {
 }
 
 def setColor(value, triggerGroup) {
-	value.level = null
+	value.level = device.currentValue("level")
     
     def hex = value.hex
     
