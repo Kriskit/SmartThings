@@ -14,7 +14,7 @@
  *
  */
 metadata {
-	definition (name: "Switch Group Device", namespace: "kriskit-trendsetter", author: "Chris Kitch") {
+	definition (name: "Switch Group Device", namespace: "kriskit-trendsetter", author: "Chris Kitch", vid: "generic-switch") {
 		capability "Actuator"
 		capability "Sensor"
 		capability "Switch"
