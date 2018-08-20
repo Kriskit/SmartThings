@@ -17,7 +17,7 @@
  */ 
  // ---- METADATA ---- //
  metadata {
- 	definition (name: "Wemo Maker", namespace: "kriskit-wemo", author: "Chris Kitch") {
+ 	definition (name: "Wemo Maker", namespace: "kriskit-wemo", author: "Chris Kitch", vid: "generic-switch") {
         capability "Actuator"
         capability "Switch"
         capability "Contact Sensor"
