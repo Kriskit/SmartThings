@@ -17,7 +17,7 @@
  *
  */
 metadata {
-	definition (name: "Contact Sensor Group Device", namespace: "kriskit-trendsetterADM", author: "Chris Kitch", vid: "generic-contact") {
+	definition (name: "Contact Sensor Group Device", namespace: "kriskit-trendsetter", author: "Chris Kitch", vid: "generic-contact") {
 	capability "Contact Sensor"
         capability "Sensor"
         capability "Refresh"
