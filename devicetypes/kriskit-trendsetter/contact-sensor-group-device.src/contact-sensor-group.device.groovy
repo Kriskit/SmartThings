@@ -12,37 +12,35 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
+ * 
+ *  2018-11-28 - Contact Sensor Group Device created by Alec McLure (Alecm) based on Chris Kitch's Power Meter Group Device
  *
  */
 metadata {
 	definition (name: "Contact Sensor Group Device", namespace: "kriskit-trendsetterADM", author: "Chris Kitch", vid: "generic-contact") {
-		capability "Contact Sensor"
+	capability "Contact Sensor"
         capability "Sensor"
         capability "Refresh"
         
         attribute "percentOpen", "number"
-        //attribute "openClosedtotal", "string"
         attribute "openCount","number"
         attribute "closedCount","number"
         attribute "totalCount","number"
+	attribute "allSome", "string"	
 	}
 
 	simulator {
 		// TODO: define status and reply messages here
 	}
+	// AlecM - 2018-11-28 - Decided to stick to "official" States of open/closed for contact capability - (so no
+	// "openish" or "closedish") in order to maintain compatibility with ActionTiles and SmartThings new app
 	tiles(scale: 2) {
 		multiAttributeTile(name:"contact", type: "generic", width: 6, height: 4) {
 			tileAttribute ("device.contact", key: "PRIMARY_CONTROL") {
 				attributeState "open", label: 'SOME ${name}',icon: "st.contact.contact.open", backgroundColor: "#e86d13"
 				attributeState "closed", label: 'ALL ${name}', icon: "st.contact.contact.closed", backgroundColor: "#00a0dc" 
 			}
-        
-			//tileAttribute ("device.percentOpen", key: "SECONDARY_CONTROL") {
-			//	attributeState "default", label: '${currentValue} %'
-			//}
-			//tileAttribute ("device.openClosedtotal", key: "SECONDARY_CONTROL") {
-			//attributeState "default", label: '${currentValue}'}
-            
+	// AlecM - 2018-11-08 - Tiles below provide counts - how many open, how many closed, total in group		
         }
      valueTile("openCount", "device.openCount", width: 2, height: 2) {
         state "val", label:'${currentValue} open', defaultState: true
@@ -53,19 +51,13 @@ metadata {
          valueTile("totalCount", "device.totalCount", width: 2, height: 2) {
         state "val", label:'${currentValue}  total', defaultState: true
     }
-     
-        
-        standardTile("refresh", "refresh", height:2, width:6, inactiveLabel: false, decoration: "flat") {
+        standardTile("refresh", "refresh", height:2, width:4, inactiveLabel: false, decoration: "flat") {
         	state "default", action: "refresh.refresh", icon:"st.secondary.refresh"
         }
-        
         main("contact")
         details(["contact","openCount","closedCount","totalCount","refresh"])
 	}
     }
-
-	
-            
 		//	tileAttribute ("device.openPercentage", key: "SECONDARY_CONTROL") {
 			//	attributeState "oPenPercentage", label:'${currentValue}% Open'
              //   attributeState "100", label:'All Open'
@@ -97,6 +89,7 @@ def syncContact(values) {
        
     log.debug "Total open: $openCount"
     log.debug "Total closed: $closedCount"
+    log.debug "Total in group: $totalCount"
     log.debug "Percentage open: $percentOpen%"
     
     
@@ -104,6 +97,8 @@ def syncContact(values) {
     sendEvent(name:"openCount",value: openCount)
     sendEvent(name:"closedCount",value: closedCount)
     sendEvent(name:"totalCount",value: totalCount)
+	
+	//AlecM - to do - update logic for one, some, most, all open - will also need to update tile
     //sendEvent (name: "openClosedtotal", value: "Open: ${openCount} /Closed: ${closedCount}/ Total: ${totalCount}")
     if (openCount == 0) 
     	{sendEvent(name: "contact",value : 'closed', displayed:true)
