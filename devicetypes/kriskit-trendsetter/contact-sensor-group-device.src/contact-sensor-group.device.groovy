@@ -26,7 +26,6 @@ metadata {
         attribute "openCount","number"
         attribute "closedCount","number"
         attribute "totalCount","number"
-	attribute "allSome", "string"	
 	}
 
 	simulator {
@@ -37,32 +36,37 @@ metadata {
 	tiles(scale: 2) {
 		multiAttributeTile(name:"contact", type: "generic", width: 6, height: 4) {
 			tileAttribute ("device.contact", key: "PRIMARY_CONTROL") {
-				attributeState "open", label: 'SOME ${name}',icon: "st.contact.contact.open", backgroundColor: "#e86d13"
+				attributeState "open", label: '1 or MORE ${name}',icon: "st.contact.contact.open", backgroundColor: "#e86d13"
 				attributeState "closed", label: 'ALL ${name}', icon: "st.contact.contact.closed", backgroundColor: "#00a0dc" 
 			}
 	// AlecM - 2018-11-08 - Tiles below provide counts - how many open, how many closed, total in group		
         }
      valueTile("openCount", "device.openCount", width: 2, height: 2) {
         state "val", label:'${currentValue} open', defaultState: true
+	         [value: 0, color: "#00a0dc"],
+           	 [value: 1, color: "#e86d13"]
     }
-      valueTile("closedCount", "device.closedCount", width: 2, height: 2) {
-        state "val", label:'${currentValue}  closed', defaultState: true
-    }
-         valueTile("totalCount", "device.totalCount", width: 2, height: 2) {
+     // valueTile("closedCount", "device.closedCount", width: 2, height: 2) {
+       // state "val", label:'${currentValue}  closed', defaultState: true,
+	////backgroundColors:[
+    //        [value: 0, color: "#e86d13"],
+   //         [value: 1, color: "#00a0dc"]
+   //     ]
+   // }
+        valueTile("totalCount", "device.totalCount", width: 2, height: 2) {
         state "val", label:'${currentValue}  total', defaultState: true
+    }
+//	valueTile("spacer", "spacer", decoration: "flat", inactiveLabel: false, width: 1, height: 1) {
+ //       state "default", label:''
     }
         standardTile("refresh", "refresh", height:2, width:4, inactiveLabel: false, decoration: "flat") {
         	state "default", action: "refresh.refresh", icon:"st.secondary.refresh"
         }
         main("contact")
-        details(["contact","openCount","closedCount","totalCount","refresh"])
+      //  details(["contact","openCount","closedCount","totalCount","refresh"])
+	details(["contact","openCount","totalCount","refresh"])
 	}
     }
-		//	tileAttribute ("device.openPercentage", key: "SECONDARY_CONTROL") {
-			//	attributeState "oPenPercentage", label:'${currentValue}% Open'
-             //   attributeState "100", label:'All Open'
-            //    attributeState "0", label:'All Closed'
-			//}
 
 // parse events into attributes
 def parse(String description) {
@@ -92,14 +96,11 @@ def syncContact(values) {
     log.debug "Total in group: $totalCount"
     log.debug "Percentage open: $percentOpen%"
     
-    
-    //sendEvent(name:"percentOpen",value: percentOpen)
+
     sendEvent(name:"openCount",value: openCount)
     sendEvent(name:"closedCount",value: closedCount)
     sendEvent(name:"totalCount",value: totalCount)
-	
-	//AlecM - to do - update logic for one, some, most, all open - will also need to update tile
-    //sendEvent (name: "openClosedtotal", value: "Open: ${openCount} /Closed: ${closedCount}/ Total: ${totalCount}")
+
     if (openCount == 0) 
     	{sendEvent(name: "contact",value : 'closed', displayed:true)
         }
