@@ -22,10 +22,11 @@ metadata {
         capability "Sensor"
         capability "Refresh"
         
-        attribute "percentOpen", "number"
         attribute "openCount","number"
         attribute "closedCount","number"
         attribute "totalCount","number"
+        attribute "openPercentage","number"
+        attribute "someAll","string"
 	}
 
 	simulator {
@@ -36,37 +37,34 @@ metadata {
 	tiles(scale: 2) {
 		multiAttributeTile(name:"contact", type: "generic", width: 6, height: 4) {
 			tileAttribute ("device.contact", key: "PRIMARY_CONTROL") {
-				attributeState "open", label: '1 or MORE ${name}',icon: "st.contact.contact.open", backgroundColor: "#e86d13"
-				attributeState "closed", label: 'ALL ${name}', icon: "st.contact.contact.closed", backgroundColor: "#00a0dc" 
+				attributeState "open", label: '${name}',icon: "st.contact.contact.open", backgroundColor: "#e86d13"
+				attributeState "closed", label: '${name}', icon: "st.contact.contact.closed", backgroundColor: "#00a0dc"     
+			}
+    //Alec M - 2018-11-30 - someAll attribute provides status such as "All Closed, One Open, Some Open, Most Open, All Open"
+            tileAttribute("device.someAll", key: "SECONDARY_CONTROL") {
+				attributeState "someAll", label:'${currentValue}'
 			}
 	// AlecM - 2018-11-08 - Tiles below provide counts - how many open, how many closed, total in group		
         }
-     valueTile("openCount", "device.openCount", width: 2, height: 2) {
-        state "val", label:'${currentValue} open', defaultState: true
-	         [value: 0, color: "#00a0dc"],
-           	 [value: 1, color: "#e86d13"]
+     	valueTile("openCount", "device.openCount", width: 2, height: 2) {
+        	state "val", label:'Open\n${currentValue}',defaultState: true
     }
-     // valueTile("closedCount", "device.closedCount", width: 2, height: 2) {
-       // state "val", label:'${currentValue}  closed', defaultState: true,
-	////backgroundColors:[
-    //        [value: 0, color: "#e86d13"],
-   //         [value: 1, color: "#00a0dc"]
-   //     ]
-   // }
-        valueTile("totalCount", "device.totalCount", width: 2, height: 2) {
-        state "val", label:'${currentValue}  total', defaultState: true
+     	valueTile("closedCount", "device.closedCount", width: 2, height: 2) {
+     		state "val", label:'Closed\n${currentValue}', defaultState: true
     }
-//	valueTile("spacer", "spacer", decoration: "flat", inactiveLabel: false, width: 1, height: 1) {
- //       state "default", label:''
+    	valueTile("totalCount", "device.totalCount", width: 2, height: 2) {
+    		state "val", label:'Total\n${currentValue}', defaultState: true
     }
-        standardTile("refresh", "refresh", height:2, width:4, inactiveLabel: false, decoration: "flat") {
-        	state "default", action: "refresh.refresh", icon:"st.secondary.refresh"
-        }
-        main("contact")
-      //  details(["contact","openCount","closedCount","totalCount","refresh"])
-	details(["contact","openCount","totalCount","refresh"])
+   		valueTile("spacer", "spacer", decoration: "flat", inactiveLabel: false, width: 2, height: 2) {
+   			state "default", label:''
 	}
+        standardTile("refresh", "refresh", height:2, width:2, inactiveLabel: false, decoration: "flat") {
+        	state "default", action: "refresh.refresh", icon:"st.secondary.refresh"
     }
+  	main("contact")
+    details(["contact","openCount","closedCount","totalCount","spacer","refresh"])
+	}
+  } 
 
 // parse events into attributes
 def parse(String description) {
@@ -89,24 +87,43 @@ def syncContact(values) {
     def totalCount = values?.size
     def openCount = values?.count { it == "open" }
     def closedCount = totalCount - openCount
-    def percentOpen = (int)Math.floor((openCount / values?.size()) * 100)
+    def openPercentage = (int)Math.floor((openCount / values?.size()) * 100)
        
     log.debug "Total open: $openCount"
     log.debug "Total closed: $closedCount"
     log.debug "Total in group: $totalCount"
-    log.debug "Percentage open: $percentOpen%"
-    
+    log.debug "Percentage open: $openPercentage%"
 
     sendEvent(name:"openCount",value: openCount)
     sendEvent(name:"closedCount",value: closedCount)
     sendEvent(name:"totalCount",value: totalCount)
+    sendEvent(name:"openPercentage",value: openPercentage)
 
+    // AlecM 2018-11-30 Set value for "contact" - open or closed 
     if (openCount == 0) 
     	{sendEvent(name: "contact",value : 'closed', displayed:true)
         }
-        else if (openCount > 0) 
-    {sendEvent(name: "contact", value: 'open',displayed:true)
-    }
-    }
+  	else if (openCount > 0) 
+    	{sendEvent(name: "contact", value: 'open',displayed:true)
+        }
     
-  
+    // AlecM 2018-11-30 Set other values for "someAll" secondary on tile
+   
+    if (openCount == 0) 
+    	{sendEvent(name: "someAll", value: 'All Closed')
+        }
+    if ((openCount == 1)&&(openPercentage < 100))  //AlecM - if there's only one in group should go to All Open
+    	{sendEvent(name: "someAll", value: 'One Open')
+    	}
+    else if ((openCount > 1) && (openPercentage < 75))
+    	{sendEvent(name: "someAll", value: 'Some Open')
+    	}
+    else if ((openCount > 1) && openPercentage < 100)
+    	{sendEvent(name: "someAll", value: 'Most Open')
+    	}
+    else if (openPercentage == 100)
+    	{sendEvent(name: "someAll", value: 'All Open')
+    	}
+    }
+   
+ 
