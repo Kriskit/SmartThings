@@ -125,5 +125,3 @@ def syncContact(values) {
     	{sendEvent(name: "someAll", value: 'All Open')
     	}
     }
-   
- 
