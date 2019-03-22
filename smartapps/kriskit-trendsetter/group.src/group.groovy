@@ -26,7 +26,7 @@ definition(
     iconX3Url: "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon@3x.png")
     
 def version() {
-	return "1.2.1"
+	return "1.2.2"
 }
 
 def typeDefinitions() {
@@ -231,7 +231,7 @@ def onDeviceAttributeChange(evt) {
         }
     }
     
-    runIn(1, "updateControllerState")
+    updateControllerState()
 }
 
 def updateControllerState() {
