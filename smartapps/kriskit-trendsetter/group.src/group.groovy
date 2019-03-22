@@ -26,7 +26,7 @@ definition(
     iconX3Url: "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon@3x.png")
     
 def version() {
-	return "1.2.2"
+	return "1.2.3"
 }
 
 def typeDefinitions() {
@@ -44,7 +44,7 @@ def typeDefinitions() {
         ],
         [
         	id: "switchLevel",
-        	type: "switchLevel", 
+        	type: "switch", 
             singular: "Dimmer", 
             plural: "Dimmers", 
             groupDeviceType: "Dimmer Group Device",
@@ -347,43 +347,43 @@ def selectedDevicesContainsController() {
 private $performCommand(target, command, args) {
     switch(args?.size()) {
     	default: 
-        	target?."$command"()
+        	for(it in target) if(it.hasCommand("$command")) it."$command"()
         break
     
     	case 1: 
-        	target?."$command"(args[0])
+        	for(it in target) if(it.hasCommand("$command")) it."$command"(args[0])
         break
         
 		case 2: 
-        	target?."$command"(args[0], args[1])
+        	for(it in target) if(it.hasCommand("$command")) it."$command"(args[0], args[1])
         break
         
 		case 3: 
-        	target?."$command"(args[0], args[1], args[2])
+        	for(it in target) if(it.hasCommand("$command")) it."$command"(args[0], args[1], args[2])
         break
         
 		case 4: 
-        	target?."$command"(args[0], args[1], args[2], args[3])
+        	for(it in target) if(it.hasCommand("$command")) it."$command"(args[0], args[1], args[2], args[3])
         break
         
 		case 5: 
-        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5])
+        	for(it in target) if(it.hasCommand("$command")) it."$command"(args[0], args[1], args[2], args[3], args[4], args[5])
         break
         
 		case 6: 
-        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6])
+        	for(it in target) if(it.hasCommand("$command")) it."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6])
         break
         
         case 7: 
-        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7])
+        	for(it in target) if(it.hasCommand("$command")) it."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7])
         break
         
         case 8: 
-        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8])
+        	for(it in target) if(it.hasCommand("$command")) it."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8])
         break
         
         case 9: 
-        	target?."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9])
+        	for(it in target) if(it.hasCommand("$command")) it."$command"(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9])
         break
     }
 }
