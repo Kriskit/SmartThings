@@ -24,7 +24,7 @@
       "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
       "published": true,
       "oAuth": false,
-      "version": "1.0",
+      "version": "1.1",
       "appSettings": {
           "clientId":"",
           "clientSecret": "",
@@ -38,7 +38,7 @@
         "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
         "published": false,
         "oAuth": false,
-        "version": "1.0",
+        "version": "1.1",
         "appSettings": {
             "devOpt": ""
         },
@@ -52,7 +52,7 @@
       "name": "Switch Group Device",
       "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
       "published": false,
-      "version": "1.0",
+      "version": "1.1",
       "appUrl": "devicetypes/kriskit-trendsetter/switch-group-device.src/switch-group-device.groovy",
       "optional": false
     },
@@ -60,7 +60,7 @@
       "name": "Dimmer Group Device",
       "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
       "published": false,
-      "version": "1.0",
+      "version": "1.1",
       "appUrl": "devicetypes/kriskit-trendsetter/dimmer-group-device.src/dimmer-group-device.groovy",
       "optional": false
     },
@@ -68,7 +68,7 @@
       "name": "Color Temperature Light Group Device",
       "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
       "published": false,
-      "version": "1.0",
+      "version": "1.1",
       "appUrl": "devicetypes/kriskit-trendsetter/color-temperature-light-group-device.src/color-temperature-light-group-device.groovy",
       "optional": false
     },
@@ -76,7 +76,7 @@
       "name": "Colorful Light Group Device",
       "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
       "published": false,
-      "version": "1.0",
+      "version": "1.1",
       "appUrl": "devicetypes/kriskit-trendsetter/colorful-light-group-device.src/colorful-light-group-device.groovy",
       "optional": false
     },
@@ -84,7 +84,7 @@
       "name": "Colorful Temperature Light Group Device",
       "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
       "published": false,
-      "version": "1.0",
+      "version": "1.1",
       "appUrl": "devicetypes/kriskit-trendsetter/colorful-temperature-light-group-device.src/colorful-temperature-light-group-device.groovy",
       "optional": false
     },
@@ -92,7 +92,7 @@
       "name": "Power Meter Group Device",
       "iconUrl": "https://cdn.rawgit.com/Kriskit/SmartThings/master/icons/trendsetter/icon.png",
       "published": false,
-      "version": "1.0",
+      "version": "1.1",
       "appUrl": "devicetypes/kriskit-trendsetter/power-meter-group-device.src/power-meter-group-device.groovy",
       "optional": false
     }
