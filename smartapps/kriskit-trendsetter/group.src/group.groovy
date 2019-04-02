@@ -230,7 +230,7 @@ def onDeviceAttributeChange(evt) {
         	runCommand(it, commandInfo.command, commandInfo.arguments)
         }
     }
-    
+    pause(500)
     updateControllerState()
 }
 
