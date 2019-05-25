@@ -37,9 +37,9 @@ metadata {
 				attributeState "off", label: '${name}', action: "switch.on", icon: "st.lights.multi-light-bulb-off", backgroundColor: "#ffffff", nextState: "turningOn"
 				attributeState "turningOn", label: '${name}', action: "switch.off", icon: "st.lights.multi-light-bulb-on", backgroundColor: "#00a0dc", nextState: "turningOff"
 				attributeState "turningOff", label: '${name}', action: "switch.on", icon: "st.lights.multi-light-bulb-off", backgroundColor: "#ffffff", nextState: "turningOn"
-                attributeState "half", label: '${name}', action: "switch.on", icon: "st.lights.multi-light-bulb-on", backgroundColor: "#6bb3ce", nextState: "turningOn"
-                attributeState "mostlyOn", label: 'Onish', action: "switch.on", icon: "st.lights.multi-light-bulb-on", backgroundColor: "#2fa8d6", nextState: "turningOn"
-                attributeState "mostlyOff", label: 'Offish', action: "switch.off", icon: "st.lights.multi-light-bulb-off", backgroundColor: "#98c1d1", nextState: "turningOff"
+                attributeState "Half On", label: 'Half', action: "switch.on", icon: "st.lights.multi-light-bulb-on", backgroundColor: "#6bb3ce", nextState: "turningOn"
+                attributeState "Mainly On", label: 'Onish', action: "switch.on", icon: "st.lights.multi-light-bulb-on", backgroundColor: "#2fa8d6", nextState: "turningOn"
+                attributeState "Mostly Off", label: 'Offish', action: "switch.off", icon: "st.lights.multi-light-bulb-off", backgroundColor: "#98c1d1", nextState: "turningOff"
 			}
             
 			tileAttribute ("device.onPercentage", key: "SECONDARY_CONTROL") {
@@ -155,11 +155,11 @@ def syncSwitch(values) {
     def value = null
     
     if (percentOn == 50)
-    	value = "half"
+    	value = "Half On"
     else if (percentOn > 0 && percentOn < 50)
-		value = "mostlyOff"
+		value = "Mostly Off"
     else if (percentOn > 50 && percentOn < 100)
-		value = "mostlyOn"
+		value = "Mainly On"
         
 	sendEvent(name: "switch", value: value)
 	sendEvent(name: "onPercentage", value: percentOn, displayed: false)
