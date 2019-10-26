@@ -229,7 +229,7 @@ def setLevel(val, triggerGroup) {
     }
         
     sendEvent(name: "level", value: val, isStateChange: true)
-    sendEvent(name: "switch.setLevel", value: val, isStateChange: true)
+    sendEvent(name: "switch level.setLevel", value: val, isStateChange: true)
     
     if (triggerGroup)
     	parent.performGroupCommand("setLevel", [val])
