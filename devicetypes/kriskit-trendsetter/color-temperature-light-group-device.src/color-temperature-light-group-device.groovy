@@ -14,7 +14,7 @@
  *
  */
 metadata {
-	definition (name: "Color Temperature Light Group Device", namespace: "kriskit-trendsetter", author: "Chris Kitch", vid: "generic-switch") {
+	definition (name: "Color Temperature Light Group Device", namespace: "kriskit-trendsetter", author: "Chris Kitch", vid: "generic-rgb-color-bulb") {
 		capability "Actuator"
 		capability "Sensor"
 		capability "Switch"
