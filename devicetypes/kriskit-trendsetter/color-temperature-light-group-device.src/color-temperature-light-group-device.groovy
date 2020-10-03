@@ -101,6 +101,10 @@ metadata {
     
     main "switch"
     details(["switch", "levelLabel", "levelSliderControl", "levelValue", "levelSync", "colorTempLabel", "colorTempSliderControl", "colorTempValue", "colorTempSync", "onButton", "offButton"])
+	
+    preferences {  
+		input name: "colorChangeWithoutTurningOn", type: "bool", title: "Set Color without turning on Lights?"
+    }
 }
 
 def parse(String description) {
@@ -287,7 +291,7 @@ def setColorTemperature(val, triggerGroup) {
     if( val > 6500)
     	val = 6500
         
-    if (triggerGroup)
+    if (triggerGroup && !colorChangeWithoutTurningOn)
        on()
         
     sendEvent(name: "colorTemperature", value: val, isStateChange: true)
